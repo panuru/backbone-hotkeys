@@ -4,5 +4,5 @@
 # hotkeys.mixinTo MyView
 # (i.e. when using Marionette, or if you want to apply hotkeys only to specific
 # views)
-define ['backbone', 'hotkeys'], (Backbone, hotkeys) ->
+define ['backbone', 'hotkeys-mixin'], (Backbone, hotkeys) ->
   Backbone.View = hotkeys.mixinTo class extends Backbone.View
