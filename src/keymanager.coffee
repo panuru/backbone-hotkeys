@@ -1,3 +1,9 @@
+# Key event manager. 
+
+# Usage:
+# keyManager = new KeyManager
+# keyManager.on key, handler, owner - to attach a handler
+# keyManager.off owner, keys - to remove owner's handlers
 define ['jquery'], ($) ->
 
   class KeyManager
@@ -40,7 +46,7 @@ define ['jquery'], ($) ->
     # @param key - the key: character, alias or ASCII code 
     # @param handler - handler function
     # @param owner - who has attached the handler
-    bind: (key, handler, owner) ->
+    on: (key, handler, owner) ->
       key = KeyManager.getKeycode key
       # store an array of handlers for each keycode
       if not @_handlers[key]? then @_handlers[key] = []
@@ -49,14 +55,17 @@ define ['jquery'], ($) ->
     # Unbinds key handlers for given owner and keys.
     # @param owner - who has attached the handler
     # @param keys - array of keys, removes all handlers if no keys are specified
-    unbind: (owner, keys) ->
+    off: (owner, keys) ->
       if not _.isArray(keys) then keys = Array.prototype.splice.call arguments, 1
+
       keys = _.map keys, (key) -> KeyManager.getKeycode(key).toString()
+
       _.each @_handlers, (handlers, key) =>
         i = 0
         while i < handlers.length
           handler = handlers[i++]
-          if handler.owner is owner 
+          if handler.owner is owner or not owner?
             if not keys.length or _.contains keys, key
               handlers.splice --i, 1
+
         if handlers.length is 0 then delete @_handlers[key]

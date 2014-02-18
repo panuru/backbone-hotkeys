@@ -82,7 +82,7 @@ module.exports = function(grunt) {
 		watch: {
 			src: {
 				files: ['src/**/*.coffee', 'tests/**/*.coffee'],
-				tasks: ['build' /*, 'test'*/]
+				tasks: ['build', 'test']
 			}
 		}
 	});
@@ -97,6 +97,6 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('build', ['clean', 'copy', 'coffee', 'coffeelint']);
 	grunt.registerTask('test', ['connect', 'jasmine']);
-	grunt.registerTask('default', ['build', /*'test',*/ 'watch']);
+	grunt.registerTask('default', ['build', 'test', 'watch']);
 
 };

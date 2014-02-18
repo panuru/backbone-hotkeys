@@ -15,14 +15,14 @@ define ['keymanager', 'jquery', 'backbone-view-patch'], (KeyManager, $) ->
           'a': 'keypress:a'
           'b': 'keypress:b'
 
-      handleA: -> console.log 'hgjhgjgjjh'
+      handleA: -> 
       handleB: ->
     
     press = (keys) ->
       keys = Array::splice.call arguments, 0 unless _.isArray keys
       _.each keys, (key) ->
-        key = KeyManager.getKeycode key
-        $(document).trigger $.Event 'keyup', which: key, keyCode: key
+        keyCode = KeyManager.getKeycode key
+        $(document).trigger $.Event 'keyup', which: keyCode, keyCode: keyCode
 
     view = null
     keystrokes = null
@@ -54,4 +54,25 @@ define ['keymanager', 'jquery', 'backbone-view-patch'], (KeyManager, $) ->
       konami = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a']
       press konami
       expect(keystrokes).toEqual konami
+
+    it 'should suspend and resume hotkeys', ->
+      press 'up'
+      view.suspendHotkeys()
+      press 'up'
+      view.resumeHotkeys()
+      press 'down'
+      expect(keystrokes).toEqual ['up', 'down']
+
+    it 'should suspend and resume specific keys', ->
+      view.suspendHotkeys 'up', 'down'
+      press 'up', 'down', 'left'
+      view.resumeHotkeys 'up'
+      press 'up', 'down'
+      expect(keystrokes).toEqual ['left', 'up']
+
+    it 'should suspend hotkeys when view is disposed', ->
+      view.remove()
+      press 'up', 'a'
+      expect(view.handleA).not.toHaveBeenCalled()
+      expect(keystrokes).toEqual []
 
